@@ -9,6 +9,7 @@ import {
   Inter_500Medium,
   Inter_700Bold
 } from '@expo-google-fonts/inter';
+import Home from './src/modules/Home/screens/Home';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -19,10 +20,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-    <View style={styles.container}>
-      <Text style={styles.text}>Startando o APP.</Text>
-      <StatusBar style="auto" />
-    </View>
+      <Home></Home>
     </ThemeProvider>
   );
 }
