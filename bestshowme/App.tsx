@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ThemeProvider } from 'styled-components';
@@ -10,6 +9,7 @@ import {
   Inter_700Bold
 } from '@expo-google-fonts/inter';
 import Home from './src/modules/Home/screens/Home';
+import Details from './src/modules/Details/screens/Details';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Home></Home>
+      <Details></Details>
     </ThemeProvider>
   );
 }
