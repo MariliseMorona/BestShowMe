@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, VirtualizedList } from 'react-native';
+import { Text, TouchableOpacity, VirtualizedList } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import theme from '../../../utils/styles/theme';
 import HomeCell from './subviews/HomeCell';
@@ -11,7 +11,7 @@ import {
   Inter_700Bold
 } from '@expo-google-fonts/inter';
 
-export default function Home() {
+const Home = ({ navigation }) => {
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -36,8 +36,16 @@ export default function Home() {
         { key: 'item 5', title: 'Item 5', image: 'https://img.freepik.com/fotos-gratis/amor-romance-perfurado-coracao-de-papel_53876-87.jpg?t=st=1722049162~exp=1722052762~hmac=4e843acd3c924eccc8a988adebc3a621e51afe9b018f7b8e60d4157eb7c0beba&w=1380'},
     ]
 
+    const handleItemClick = (item) => {
+        navigation.navigate('Details', {name: item.title})
+        // Implemente o que você deseja fazer com o item clicado
+    };
+
     const renderItem = ({ item }: { item: Item }) => (
-        <HomeCell item={item}></HomeCell>
+        <TouchableOpacity onPress={() => handleItemClick(item)}>
+            <HomeCell item={item}></HomeCell>
+        </TouchableOpacity>
+        
     );
   
     const getItem = ( data: Item[], index: number ) => {
@@ -63,3 +71,4 @@ export default function Home() {
         </ThemeProvider>
     );
 }
+export default Home;

@@ -5,13 +5,13 @@ import { Container, CellContainer, Title, SimpleText } from '../../../components
 import { Audio, Video } from 'expo-av';
 import LikedButton from '../components/LikedButton/LikedButton'
 
-export default function Details() {
+export const Details = ({ navigation, route }) => {
     return (
         <ThemeProvider theme={theme}>
             <Container>
                 <CellContainer>
                     <Title>
-                        Video legal
+                        {route.params.name}
                     </Title>
                     <SimpleText>
                         Esse vídeo é muito legal. Bora assistir juntos ?
@@ -21,7 +21,7 @@ export default function Details() {
                         rate={1.0}
                         volume={1.0}
                         isMuted={false}
-                        resizeMode="cover"
+                        resizeMode='cover'
                         shouldPlay
                         // isLooping
                         style={{ width: 300, height: 200 }}
@@ -38,3 +38,4 @@ export default function Details() {
         </ThemeProvider>
     );
 }
+export default Details;
