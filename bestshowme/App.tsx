@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import Routes from './src/routes/routes';
 import { ThemeProvider } from 'styled-components';
 import theme from './src/utils/styles/theme';
 import {
@@ -23,34 +23,8 @@ export default function App() {
   const Stack = createNativeStackNavigator();
 
   return (
-    <NavigationContainer>
       <ThemeProvider theme={theme}>
-        <Stack.Navigator>
-          <Stack.Screen
-            name='Home'
-            component={Home}
-            options={{title: 'BestShowME'}}>
-          </Stack.Screen>
-          <Stack.Screen
-            name='Details'
-            component={Details}>
-          </Stack.Screen>
-        </Stack.Navigator>
+        <Routes></Routes>
       </ThemeProvider>
-    </NavigationContainer>
-    
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: theme.colors.pink,
-    fontFamily: theme.fonts.bold
-  },
-});
