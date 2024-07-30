@@ -11,7 +11,7 @@ export default function HomeCell({ item }: HomeCellProps) {
     return (
         <CellContainer>
             <Subtitle>
-                ${ item.title }
+                { item.title }
             </Subtitle>
             <VideoContainer
                 source={{ uri: item.image }}

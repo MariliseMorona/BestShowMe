@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import Routes from './src/routes/routes';
 import { ThemeProvider } from 'styled-components';
 import theme from './src/utils/styles/theme';
 import {
@@ -10,6 +10,8 @@ import {
 } from '@expo-google-fonts/inter';
 import Home from './src/modules/Home/screens/Home';
 import Details from './src/modules/Details/screens/Details';
+import { NavigationContainer } from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,22 +20,11 @@ export default function App() {
     Inter_700Bold
   })
 
+  const Stack = createNativeStackNavigator();
+
   return (
-    <ThemeProvider theme={theme}>
-      <Details></Details>
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <Routes></Routes>
+      </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: theme.colors.pink,
-    fontFamily: theme.fonts.bold
-  },
-});
