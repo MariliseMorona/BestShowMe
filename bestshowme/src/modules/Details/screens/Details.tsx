@@ -5,7 +5,7 @@ import { Container, CellContainer, Title, SimpleText } from '../../../components
 import { Audio, Video } from 'expo-av';
 import LikedButton from '../components/LikedButton/LikedButton'
 
-export const Details = ({ navigation, route }) => {
+export const Details = ({ route }) => {
     return (
         <ThemeProvider theme={theme}>
             <Container>
