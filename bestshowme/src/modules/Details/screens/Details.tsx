@@ -13,7 +13,7 @@ type Props = {
     route: DetailsScreenRouteProp;
 };
 
-export const Details = ({ route }) => {
+export const Details = ({ route }: Props) => {
     const { item } = route.params;
 
     return (
@@ -21,7 +21,7 @@ export const Details = ({ route }) => {
             <Container>
                 <CellContainer>
                     <Title>
-                        {item.name}
+                        {item.title}
                     </Title>
                     <SimpleText>
                         Esse vídeo é muito legal. Bora assistir juntos ?

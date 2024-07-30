@@ -1,6 +1,5 @@
 import React from 'react';
 import { CellContainer, Subtitle } from '../../../../components/styles';
-import { Image } from 'react-native';
 import { VideoContainer } from '../../components/styles';
 
 interface HomeCellProps {
