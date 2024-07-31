@@ -1,9 +1,10 @@
 import React from 'react';
 import { CellContainer, Subtitle } from '../../../../components/styles';
-import { VideoContainer } from '../../components/styles';
+import { ImageContainer } from '../../components/styles';
+import { Video } from '../../../../services/model';
 
 interface HomeCellProps {
-    item: { key: string, title: string, image: string }; 
+    item: Video; 
 }
 
 export default function HomeCell({ item }: HomeCellProps) {
@@ -12,8 +13,8 @@ export default function HomeCell({ item }: HomeCellProps) {
             <Subtitle>
                 { item.title }
             </Subtitle>
-            <VideoContainer
-                source={{ uri: item.image }}
+            <ImageContainer
+                source={{ uri: item.thumbnail }}
                 resizeMode="contain"
             />
         </CellContainer>

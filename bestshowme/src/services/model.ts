@@ -1,5 +1,12 @@
-export interface Item {
-    key: string;
+export interface Video {
+    id: string;
     title: string;
-    image: string;
+    created_at: string;
+    category: string;
+    hls_path: string;
+    description: string;
+    thumbnail: string;
+    site_id: number;
+    views: number;
+    likes: number;
 }

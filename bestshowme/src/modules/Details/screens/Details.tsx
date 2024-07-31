@@ -23,11 +23,8 @@ export const Details = ({ route }: Props) => {
                     <Title>
                         {item.title}
                     </Title>
-                    <SimpleText>
-                        Esse vídeo é muito legal. Bora assistir juntos ?
-                    </SimpleText>
                     <Video
-                        source={{ uri: item.image }}
+                        source={{ uri: item.hls_path }}
                         rate={1.0}
                         volume={1.0}
                         isMuted={false}
@@ -38,8 +35,10 @@ export const Details = ({ route }: Props) => {
                     >
                     </Video>
                     <SimpleText>
-                        Esse vídeo é muito legal. Bora assistir juntos ?
+                        { item.description }
                     </SimpleText>
+                    <SimpleText>Views: {item.views}</SimpleText>
+                    <SimpleText>Likes: {item.likes}</SimpleText>
                     <LikedButton>
 
                     </LikedButton>
