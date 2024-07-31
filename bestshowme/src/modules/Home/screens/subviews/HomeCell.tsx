@@ -1,7 +1,7 @@
 import React from 'react';
 import { CellContainer, Subtitle } from '../../../../components/styles';
 import { ImageContainer } from '../../components/styles';
-import { Video } from '../../../../services/model';
+import { Video } from '../../services/model';
 import { View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 

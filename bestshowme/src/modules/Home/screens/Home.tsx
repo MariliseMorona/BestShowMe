@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect} from "@react-navigation/native";
 import { RootStackParamList } from '../../../routes/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ThemeProvider } from 'styled-components';
@@ -7,7 +7,7 @@ import theme from '../../../utils/styles/theme';
 import { Text, TouchableOpacity, FlatList, View } from 'react-native';
 import HomeCell from './subviews/HomeCell';
 import { Container, Title, TableContainer, SimpleText } from '../../../components/styles';
-import { Video, ListVideos } from '../../../services/model';
+import { Video, ListVideos } from '../services/model';
 import {
   useFonts,
   Inter_400Regular,
@@ -33,6 +33,13 @@ export default function Home() {
     const [localVideos, setLocalVideos] = useState<Video[]>([]);
     const [refresh, setRefresh] = useState(false);
 
+    useFocusEffect(
+        useCallback(() => {
+            setPagination(1)
+            fetchData(pagination, 7);
+        }, [])
+    );
+
     const fetchData = useCallback(async (page: number, perPage: number) => {
         try {
             setLoading(true);
@@ -49,12 +56,10 @@ export default function Home() {
                     video.id && video.title && video.hls_path
                 );
                 setLocalVideos(prevVideos => {
-                    const newVideos = validVideos.filter(
-                        (newVideo: Video) => !prevVideos.some(
-                            (video: Video) => video.id === newVideo.id
-                        )
-                    );
-                    return [...prevVideos, ...newVideos];
+                    const videoMap = new Map<string, Video>();
+                    prevVideos.forEach(video => videoMap.set(video.id, video));
+                    validVideos.forEach((video: Video) => videoMap.set(video.id, video));
+                    return Array.from(videoMap.values());
                 });
                 setData(prevData => {
                         if (prevData) {
