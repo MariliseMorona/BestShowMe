@@ -1,19 +1,20 @@
-import React from 'react';
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigation, useFocusEffect} from "@react-navigation/native";
 import { RootStackParamList } from '../../../routes/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ThemeProvider } from 'styled-components';
 import theme from '../../../utils/styles/theme';
-import { Text, TouchableOpacity, VirtualizedList } from 'react-native';
+import { Text, TouchableOpacity, FlatList, View } from 'react-native';
 import HomeCell from './subviews/HomeCell';
-import { Container, Title, TableContainer } from '../../../components/styles';
-import { Item } from '../../../services/model';
+import { Container, Title, TableContainer, SimpleText } from '../../../components/styles';
+import { Video, ListVideos } from '../services/model';
 import {
   useFonts,
   Inter_400Regular,
   Inter_500Medium,
   Inter_700Bold
 } from '@expo-google-fonts/inter';
+import { api } from '../../../services/api';
 
 export default function Home() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -23,47 +24,141 @@ export default function Home() {
         Inter_700Bold
     })
 
+    const [data, setData] = useState<ListVideos>()
+    const [pagination, setPagination] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [localVideos, setLocalVideos] = useState<Video[]>([]);
+    const [refresh, setRefresh] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            setPagination(1)
+            fetchData(pagination, 7);
+        }, [])
+    );
+
+    const fetchData = useCallback(async (page: number, perPage: number) => {
+        try {
+            setLoading(true);
+            const response = await api.get('videos/', {
+                params: {
+                    _page: page,
+                    _per_page: perPage
+                }
+            });
+            if (response.data && response.data.data) {
+                console.log('response:', response);
+                setTotalItems(response.data.items);
+                const validVideos = response.data.data.filter((video: Video) => 
+                    video.id && video.title && video.hls_path
+                );
+                setLocalVideos(prevVideos => {
+                    const videoMap = new Map<string, Video>();
+                    prevVideos.forEach(video => videoMap.set(video.id, video));
+                    validVideos.forEach((video: Video) => videoMap.set(video.id, video));
+                    return Array.from(videoMap.values());
+                });
+                setData(prevData => {
+                        if (prevData) {
+                            return {
+                                ...prevData,
+                                ...response.data,
+                                data: [...prevData.data, ...response.data.data]
+                            };
+                        } else {
+                            return response.data;
+                        }
+                    });
+                setHasMore(response.data.next !== null && validVideos.length > 0);
+                setRefresh(prev => !prev);
+            } else {
+                console.log('false:', response);
+                setHasMore(false);
+            }
+        } catch (error) {
+            console.error('Request error:', error);
+            setError(null);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData(pagination, 7);
+    }, [fetchData, pagination]);
+
+    useEffect(() => {
+        if (localVideos.length >= totalItems) {
+            setHasMore(false);
+        }
+    }, [localVideos, totalItems]);
+
     if (!fontsLoaded) {
         return <Text>Carregando fontes...</Text>;
     }
 
-    const data = [
-        { key: 'item 1', title: 'Item 1', image: 'https://img.freepik.com/fotos-gratis/amor-romance-perfurado-coracao-de-papel_53876-87.jpg?t=st=1722049162~exp=1722052762~hmac=4e843acd3c924eccc8a988adebc3a621e51afe9b018f7b8e60d4157eb7c0beba&w=1380'},
-        { key: 'item 2', title: 'Item 2', image: 'https://img.freepik.com/fotos-gratis/amor-romance-perfurado-coracao-de-papel_53876-87.jpg?t=st=1722049162~exp=1722052762~hmac=4e843acd3c924eccc8a988adebc3a621e51afe9b018f7b8e60d4157eb7c0beba&w=1380'},
-        { key: 'item 3', title: 'Item 3', image: 'https://nsm-video.netshow.me/08467dc2-8619-40a6-a38c-21384a1e529d/741bd684-48f6-49b3-8422-084e3ed3180a/playlist.m3u8'},
-        { key: 'item 4', title: 'Item 4', image: 'https://img.freepik.com/fotos-gratis/amor-romance-perfurado-coracao-de-papel_53876-87.jpg?t=st=1722049162~exp=1722052762~hmac=4e843acd3c924eccc8a988adebc3a621e51afe9b018f7b8e60d4157eb7c0beba&w=1380'},
-        { key: 'item 5', title: 'Item 5', image: 'https://img.freepik.com/fotos-gratis/amor-romance-perfurado-coracao-de-papel_53876-87.jpg?t=st=1722049162~exp=1722052762~hmac=4e843acd3c924eccc8a988adebc3a621e51afe9b018f7b8e60d4157eb7c0beba&w=1380'},
-    ]
+    if (error) {
+        return <Text>Erro:</Text>;
+    }
 
-    const handleItemClick = (item: Item) => {
+    const handleItemClick = (item: Video) => {
         navigation.navigate('Details', {item})
     };
 
-    const renderItem = ({ item }: { item: Item }) => (
+    const renderItem = ({ item }: { item: Video }) => (
+        console.log('renderItem:', item),
         <TouchableOpacity onPress={() => handleItemClick(item)}>
             <HomeCell item={item}></HomeCell>
         </TouchableOpacity>
     );
   
-    const getItem = ( data: Item[], index: number ) => {
-        return data[index]
+    const getItem = (data: Video[], index: number) => data[index];
+    const getItemCount = (data: Video[] | undefined) => {
+        if (!data) return 0;
+        return data.filter(video => video.id && video.title && video.hls_path).length;
     };
 
-    const getItemCount = () => data.length;
+    const handleEndReached = () => {
+        if (!loading && hasMore) {
+            setPagination(prevPage => prevPage + 1);
+        }
+    };
 
+  const keyExtractor = (item: Video) => item.id;
+
+  const ListEmptyComponent = () => {
+    return (
+        <View>
+            <SimpleText>
+                Sua lista esta vazia.
+            </SimpleText>
+        </View>
+    )
+  }
     return (
         <ThemeProvider theme={theme}>
             <Container>
                 <Title>Startando o APP.</Title>
-                    <VirtualizedList 
-                        data={data} 
-                        style={TableContainer}
-                        renderItem={renderItem} 
-                        initialNumToRender={4}
-                        keyExtractor={item => item.key}
-                        getItemCount={getItemCount}
-                        getItem={getItem}
-                    />
+                    {/* <TableContainer> */}
+                        <FlatList
+                            data={data?.data}
+                            style={TableContainer}
+                            // contentContainerStyle={{ paddingBottom: 10 }}
+                            renderItem={renderItem}
+                            initialNumToRender={4}
+                            keyExtractor={keyExtractor}
+                            numColumns={2}
+                            onEndReached={handleEndReached}
+                            onEndReachedThreshold={0.1}
+                            showsVerticalScrollIndicator={false}
+                            extraData={refresh}
+                            ListFooterComponent={ListEmptyComponent}
+                        /> 
+                    {/* </TableContainer> */}
+                     {loading && <Text>Carregando mais...</Text>}
             </Container>
         </ThemeProvider>
     );

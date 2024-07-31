@@ -3,11 +3,17 @@ import { IconButton } from 'react-native-paper';
 import { ContainerIcon } from './styles';
 import theme from '../../../../utils/styles/theme';
 
-export default function LikedButton() {
+interface LikedButtonProps {
+    onLikeToggle: (liked: boolean) => void;
+}
+
+const LikedButton: React.FC<LikedButtonProps> = ({ onLikeToggle }) => {
     const [liked, setLiked] = useState(false);
 
     const toggleLike = () => {
-        setLiked(!liked);
+        const newLikedState = !liked;
+        setLiked(newLikedState);
+        onLikeToggle(newLikedState);
     };
 
     return(
@@ -21,4 +27,6 @@ export default function LikedButton() {
             />
         </ContainerIcon>
     );
-}
+};
+
+export default LikedButton;

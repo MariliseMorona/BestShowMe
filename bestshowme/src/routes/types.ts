@@ -1,6 +1,6 @@
-import { Item } from '../services/model';
+import { Video } from '../modules/Home/services/model';
 
 export type RootStackParamList = {
     Home: undefined;
-    Details: { item: Item };
+    Details: { item: Video };
 };
