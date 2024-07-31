@@ -10,3 +10,13 @@ export interface Video {
     views: number;
     likes: number;
 }
+
+export interface ListVideos {
+    first: number,
+    prev: null,
+    next: number,
+    last: number,
+    pages: number,
+    items: number,
+    data: [Video]
+}

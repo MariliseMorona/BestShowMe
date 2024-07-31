@@ -7,10 +7,10 @@ const baseURLAndroid = Constants.expoConfig?.extra?.baseURLAndroid;
 const baseURL = Platform.OS === 'android' ? baseURLAndroid : baseURLIOS;
 
 console.log('baseURL:', baseURL);
-// if (baseURL) {
-//     throw new Error('Base URL não está definida.');
-// }
+if (!baseURL) {
+    throw new Error('Base URL não está definida.');
+}
 
 export const api = axios.create({
-    baseURL:  baseURL
+    baseURL:  baseURL 
 });

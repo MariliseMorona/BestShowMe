@@ -1,16 +1,24 @@
 import styled from "styled-components/native";
-import { Platform } from 'react-native';
+import { Platform, Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
+const itemWidth = screenWidth 
 
 export const Container = styled.View`
   flex: 1;
-  background-color: ${ props => props.theme.colors.white };
+  width: 100%;
+  background-color: ${ props => props.theme.colors.purple };
 `;
 
-export const TableContainer = styled.View`
-  flex: 1;
-  background-color: ${props => props.theme.colors.purple};
-  margin-top: 20px;
-  padding: 16px;
+export const CellContainer = styled.View`
+  width: ${(screenWidth / 2) - 20}px;
+  margin: 8px;
+  padding: 16px -16px;
+  border-width: 2px;
+  border-color: ${props => props.theme.colors.purple};
+  background-color: ${props => props.theme.colors.white};
+  border-radius: 10px;
+  justify-content: center;
   ${Platform.OS === 'ios' ? 
     `shadow-color: #000;
     shadow-offset: 0px 10px;
@@ -21,12 +29,16 @@ export const TableContainer = styled.View`
   }
 `;
 
-export const CellContainer = styled.View`
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
+export const TableContainer = styled.View`
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px -16px;
+`;
+
+export const DetailsContainer = styled.View`
+  width: ${screenWidth}px;
   margin: 8px;
+  padding: 16px;
   border-width: 2px;
   border-color: ${props => props.theme.colors.purple};
   background-color: ${props => props.theme.colors.white};
@@ -43,7 +55,9 @@ export const CellContainer = styled.View`
 
 export const Title = styled.Text`
     font-size: 28px;
-    color: ${ props => props.theme.colors.purple };
+    text-align: center;
+    color: ${ props => props.theme.colors.white };
+    font-family: ${ props => props.theme.fonts.bold };
 `;
 
 export const Subtitle = styled.Text`

@@ -3,7 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import theme from '../../../utils/styles/theme';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../routes/types';
-import { Container, CellContainer, Title, SimpleText } from '../../../components/styles';
+import { Container, DetailsContainer, Title, SimpleText } from '../../../components/styles';
 import { Audio, Video } from 'expo-av';
 import LikedButton from '../components/LikedButton/LikedButton'
 
@@ -19,7 +19,7 @@ export const Details = ({ route }: Props) => {
     return (
         <ThemeProvider theme={theme}>
             <Container>
-                <CellContainer>
+                <DetailsContainer>
                     <Title>
                         {item.title}
                     </Title>
@@ -40,9 +40,8 @@ export const Details = ({ route }: Props) => {
                     <SimpleText>Views: {item.views}</SimpleText>
                     <SimpleText>Likes: {item.likes}</SimpleText>
                     <LikedButton>
-
                     </LikedButton>
-                </CellContainer>
+                </DetailsContainer>
             </Container>
         </ThemeProvider>
     );
