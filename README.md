@@ -33,4 +33,3 @@ O projeto utiliza a biblioteca react-navigation para gerenciar a navegação ent
 Integração com APIs
 O app foi desenvolvido utilizando o jsonServer/db.json
 Extraia essa pasta do projeto, e execute o comando npx json-server db.json para executa-lo em seu localhost.
-Scripts Disponíveis
