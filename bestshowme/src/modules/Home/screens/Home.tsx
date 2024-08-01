@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigation, useFocusEffect} from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { RootStackParamList } from '../../../routes/types';
+import { useOrientation } from '../../../utils/usability.config/OrientationContext';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ThemeProvider } from 'styled-components';
 import theme from '../../../utils/styles/theme';
-import { Text, TouchableOpacity, FlatList, View } from 'react-native';
+import { Text, TouchableOpacity, FlatList, View, ActivityIndicator } from 'react-native';
 import HomeCell from './subviews/HomeCell';
 import { Container, Title, TableContainer, SimpleText } from '../../../components/styles';
 import { Video, ListVideos } from '../services/model';
@@ -18,147 +19,114 @@ import { api } from '../../../services/api';
 
 export default function Home() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const { isFullscreen } = useOrientation();
+
     const [fontsLoaded] = useFonts({
         Inter_400Regular,
         Inter_500Medium,
         Inter_700Bold
-    })
+    });
 
-    const [data, setData] = useState<ListVideos>()
-    const [pagination, setPagination] = useState(1);
-    const [totalItems, setTotalItems] = useState(0);
+    const [data, setData] = useState<ListVideos>();
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [localVideos, setLocalVideos] = useState<Video[]>([]);
-    const [refresh, setRefresh] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
-            setPagination(1)
-            fetchData(pagination, 7);
+            setPage(1)
+            fetchData(page, 7);
         }, [])
     );
 
     const fetchData = useCallback(async (page: number, perPage: number) => {
         try {
             setLoading(true);
-            const response = await api.get('videos/', {
+            const response = await api.get('/videos', {
                 params: {
                     _page: page,
                     _per_page: perPage
                 }
             });
             if (response.data && response.data.data) {
-                console.log('response:', response);
-                setTotalItems(response.data.items);
-                const validVideos = response.data.data.filter((video: Video) => 
+                const fetchedVideos = response.data.data.filter((video: Video) =>
                     video.id && video.title && video.hls_path
                 );
-                setLocalVideos(prevVideos => {
-                    const videoMap = new Map<string, Video>();
-                    prevVideos.forEach(video => videoMap.set(video.id, video));
-                    validVideos.forEach((video: Video) => videoMap.set(video.id, video));
-                    return Array.from(videoMap.values());
-                });
-                setData(prevData => {
-                        if (prevData) {
-                            return {
-                                ...prevData,
-                                ...response.data,
-                                data: [...prevData.data, ...response.data.data]
-                            };
-                        } else {
-                            return response.data;
-                        }
-                    });
-                setHasMore(response.data.next !== null && validVideos.length > 0);
-                setRefresh(prev => !prev);
+                setData(prevData => page === 1 ? fetchedVideos : [...prevData, ...fetchedVideos]);
+                setHasMore(response.data.next !== null && fetchedVideos.length > 0);
             } else {
-                console.log('false:', response);
                 setHasMore(false);
             }
         } catch (error) {
-            console.error('Request error:', error);
-            setError(null);
+            console.error('Erro ao buscar vídeos:', error);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     }, []);
 
-    useEffect(() => {
-        fetchData(pagination, 7);
-    }, [fetchData, pagination]);
+    useFocusEffect(
+        useCallback(() => {
+            setPage(1);
+            fetchData(1, 6);
+        }, [fetchData])
+    );
 
-    useEffect(() => {
-        if (localVideos.length >= totalItems) {
-            setHasMore(false);
+    const handleRefresh = () => {
+        setRefreshing(true);
+        setPage(1);
+        fetchData(1, 6);
+    };
+
+    const handleEndReached = () => {
+        if (!loading && hasMore) {
+            setPage(prevPage => prevPage + 1);
+            fetchData(page + 1, 6);
         }
-    }, [localVideos, totalItems]);
+    };
+
+    const renderFooter = () => {
+        if (!loading) return null;
+        return (
+            <View style={{ padding: 10 }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    };
 
     if (!fontsLoaded) {
         return <Text>Carregando fontes...</Text>;
     }
 
-    if (error) {
-        return <Text>Erro:</Text>;
-    }
-
     const handleItemClick = (item: Video) => {
-        navigation.navigate('Details', {item})
+        navigation.navigate('Details', { item });
     };
 
     const renderItem = ({ item }: { item: Video }) => (
-        console.log('renderItem:', item),
         <TouchableOpacity onPress={() => handleItemClick(item)}>
-            <HomeCell item={item}></HomeCell>
+            <HomeCell item={item} isFullscreen={isFullscreen} />
         </TouchableOpacity>
     );
-  
-    const getItem = (data: Video[], index: number) => data[index];
-    const getItemCount = (data: Video[] | undefined) => {
-        if (!data) return 0;
-        return data.filter(video => video.id && video.title && video.hls_path).length;
-    };
 
-    const handleEndReached = () => {
-        if (!loading && hasMore) {
-            setPagination(prevPage => prevPage + 1);
-        }
-    };
-
-  const keyExtractor = (item: Video) => item.id;
-
-  const ListEmptyComponent = () => {
-    return (
-        <View>
-            <SimpleText>
-                Sua lista esta vazia.
-            </SimpleText>
-        </View>
-    )
-  }
     return (
         <ThemeProvider theme={theme}>
             <Container>
                 <Title>Startando o APP.</Title>
-                    {/* <TableContainer> */}
-                        <FlatList
-                            data={data?.data}
-                            style={TableContainer}
-                            // contentContainerStyle={{ paddingBottom: 10 }}
-                            renderItem={renderItem}
-                            initialNumToRender={4}
-                            keyExtractor={keyExtractor}
-                            numColumns={2}
-                            onEndReached={handleEndReached}
-                            onEndReachedThreshold={0.1}
-                            showsVerticalScrollIndicator={false}
-                            extraData={refresh}
-                            ListFooterComponent={ListEmptyComponent}
-                        /> 
-                    {/* </TableContainer> */}
-                     {loading && <Text>Carregando mais...</Text>}
+                <FlatList
+                    data={data}
+                    style={TableContainer}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    numColumns={2}
+                    onEndReached={handleEndReached}
+                    onEndReachedThreshold={0.1}
+                    showsVerticalScrollIndicator={false}
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                    ListFooterComponent={renderFooter}
+                />
+                {loading && !refreshing && <Text>Carregando mais...</Text>}
             </Container>
         </ThemeProvider>
     );

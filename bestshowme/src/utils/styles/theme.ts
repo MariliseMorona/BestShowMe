@@ -1,3 +1,5 @@
+import { DefaultTheme, Theme as NavigationTheme } from '@react-navigation/native';
+
 const theme = {
   colors: {
     white: '#ffffff',
@@ -12,6 +14,17 @@ const theme = {
     medium: 'Inter_500Medium',
     bold: 'Inter_700Bold',
   }
+};
+
+export const navigationTheme: NavigationTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: theme.colors.purple,
+    background: theme.colors.purple,
+    card: theme.colors.white,
+    text: theme.colors.text,
+  },
 };
 
 export type ThemeType = typeof theme;
