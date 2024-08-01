@@ -7,15 +7,11 @@ Antes de começar, verifique se você tem as seguintes ferramentas instaladas:
 Node.js (versão 14 ou superior)
 Expo CLI (globalmente instalado)
 Para instalar o Expo CLI, você pode usar o seguinte comando:
-sh
-Copiar código
 npm install -g expo-cli
-Instalação
 
-Clone o repositório:
-&
-Instale as dependências:
+Clone o repositório & Instale as dependências:
 npm install
+
 Inicie o servidor de desenvolvimento Expo:
 expo start
 Isso abrirá o Expo Developer Tools no seu terminal. Você pode usar o QR code exibido para abrir o aplicativo em seu dispositivo móvel usando o Expo Go ou ainda selecionar as opções (i) para rodar o app em seu simulador iOS, e a para simulador Android.
