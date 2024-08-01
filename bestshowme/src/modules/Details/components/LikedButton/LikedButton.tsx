@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IconButton } from 'react-native-paper';
-import { ContainerIcon } from './styles';
+import { ContainerIcon } from '../styles';
 import theme from '../../../../utils/styles/theme';
 
 interface LikedButtonProps {
@@ -25,6 +25,7 @@ const LikedButton: React.FC<LikedButtonProps> = ({ onLikeToggle, isLiked }) => {
     return(
         <ContainerIcon>
             <IconButton
+                testID="like-button"
                 icon={ liked ? 'thumb-up' : 'thumb-up-outline' }
                 background={liked ? theme.colors.pink : theme.colors.white }
                 size={30}

@@ -11,7 +11,7 @@ import { AdsVideo } from '../services/model';
 import { api } from '../../../services/api';
 import { Skeleton } from 'moti/skeleton';
 import { SkeletonCommonProps } from '../../../components/styles.animations';
-import { Title, DetailsContainer, ContainerVideo, LandsCapeMode_Video, PortraitMode_Video } from '../components/LikedButton/styles';
+import { Title, DetailsContainer, ContainerVideo, LandsCapeMode_Video, PortraitMode_Video } from '../components/styles';
 import { Icon } from 'react-native-paper';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
