@@ -18,7 +18,7 @@ Instale as dependências:
 npm install
 Inicie o servidor de desenvolvimento Expo:
 expo start
-Isso abrirá o Expo Developer Tools no seu navegador padrão. Você pode usar o QR code exibido para abrir o aplicativo em seu dispositivo móvel usando o Expo Go.
+Isso abrirá o Expo Developer Tools no seu terminal. Você pode usar o QR code exibido para abrir o aplicativo em seu dispositivo móvel usando o Expo Go ou ainda selecionar as opções (i) para rodar o app em seu simulador iOS, e a para simulador Android.
 
 Estrutura
 
@@ -33,14 +33,8 @@ App.js: Ponto de entrada do aplicativo.
 Navegação
 
 O projeto utiliza a biblioteca react-navigation para gerenciar a navegação entre as telas. A configuração básica está localizada na pasta routes/.
-Para mais detalhes sobre como configurar e usar o react-navigation, consulte a documentação oficial.
+
 Integração com APIs
-
+O app foi desenvolvido utilizando o jsonServer/db.json
+Extraia essa pasta do projeto, e execute o comando npx json-server db.json para executa-lo em seu localhost.
 Scripts Disponíveis
-
-No diretório do projeto, você pode usar os seguintes comandos:
-npm start - Inicia o servidor de desenvolvimento Expo.
-npm run android - Inicia o aplicativo no emulador Android.
-npm run ios - Inicia o aplicativo no simulador iOS (MacOS necessário).
-npm run build - Cria uma versão de produção do aplicativo.
-
