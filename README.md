@@ -1,6 +1,7 @@
 BestShowME
 
-Este é um projeto React Native criado com Expo, para listar e interagir com uma lista de vídeos.
+Este é um projeto React Native criado com Expo desenvolvido para as plataformas iOS e Android, para listar e interagir com uma lista de vídeos.
+O projeto esta em MVVM e utiliza routes para navegação.
 
 Antes de começar, verifique se você tem as seguintes ferramentas instaladas:
 Node.js (versão 14 ou superior)
@@ -12,20 +13,14 @@ npm install -g expo-cli
 Instalação
 
 Clone o repositório:
-sh
-Copiar código
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+&
 Instale as dependências:
-sh
-Copiar código
 npm install
 Inicie o servidor de desenvolvimento Expo:
-sh
-Copiar código
 expo start
 Isso abrirá o Expo Developer Tools no seu navegador padrão. Você pode usar o QR code exibido para abrir o aplicativo em seu dispositivo móvel usando o Expo Go.
-Uso
+
+Estrutura
 
 src/: Contém o código-fonte do aplicativo.
 components/: Componentes reutilizáveis.
